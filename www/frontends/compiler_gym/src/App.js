@@ -15,7 +15,7 @@ import PanelsContainer from "./components/PanelsContainer";
 import ControlsContainer from "./components/Sections/ControlsContainer";
 import ObservationsContainer from "./components/Sections/ObservationsContainer";
 
-const api = new ApiService("http://127.0.0.1:5000");
+const api = new ApiService("http://18.118.146.0:5000/");
 const initialSettings = {
   reward: "IrInstructionCountOz",
   benchmark: "benchmark://cbench-v1/qsort",
@@ -74,7 +74,10 @@ function App() {
   const submitStep = (stepIDs) => {
     api.getSteps(session.session_id, stepIDs).then(
       (result) => {
-        setSession({ ...session, states: [...session.states, ...result.states] });
+        setSession({
+          ...session,
+          states: [...session.states, ...result.states],
+        });
       },
       (error) => {
         console.log(error);
@@ -105,8 +108,8 @@ function App() {
           <div className="main-content">
             <MainNavbar />
             <PanelsContainer
-              left={<ControlsContainer/>}
-              right={<ObservationsContainer/>}
+              left={<ControlsContainer />}
+              right={<ObservationsContainer />}
             />
           </div>
         </ThemeContext.Provider>
