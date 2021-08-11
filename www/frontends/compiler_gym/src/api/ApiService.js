@@ -7,7 +7,7 @@
 export default class ApiService {
   constructor(domain) {
     if (!process.env.NODE_ENV || process.env.NODE_ENV === "development") {
-      this.domain = domain || "http://127.0.0.1:5000";
+      this.domain = domain || "http://18.118.146.0:5000";
     } else {
       this.domain = domain || "http://production";
     }
@@ -32,7 +32,7 @@ export default class ApiService {
     });
   }
 
-  undoStep(sessionID,n){
+  undoStep(sessionID, n) {
     return this.fetch(`${this.domain}/api/v3/undo/${sessionID}/${n}`, {
       method: "GET",
     });
