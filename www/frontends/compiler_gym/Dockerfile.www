@@ -1,0 +1,51 @@
+# syntax = docker/dockerfile:1.2
+# Standalone AWS to deploy the web app to an s3 bucket
+
+
+# ####################
+#  Build and Deploy in 1 step - execute the following comnmand
+# ####################
+
+# DOCKER_BUILDKIT=1 docker-compose  -f docker-compose.aws-dev.yml --env-file .env.aws-beta build www_deploy .&& DOCKER_BUILDKIT=1 docker-compose  -f docker-compose.aws-dev.yml --env-file .env.aws-beta up www_deploy
+
+# ####################
+#  Web App - Build
+# ####################
+
+FROM node:17-alpine as builder
+
+ARG COMPILER_GYM_API_ENDPOINT
+
+# Install node packages
+WORKDIR /usr/src/app
+COPY package.json package-lock.json ./
+RUN npm install
+
+# Setup up dynamically created Environment config
+RUN echo REACT_APP_API_URL=${COMPILER_GYM_API_ENDPOINT} > .env.production
+
+# Copy reaminder of the UI Code
+COPY public/ ./public/
+COPY src/ ./src/
+RUN npm run build
+
+# ####################
+#  Web App - S3 deploy
+######################
+#Create a new container from a linux base image that has the aws-cli installed
+FROM amazon/aws-cli:2.7.20
+
+ARG AWS_S3_WWW_BUCKET
+ARG AWS_CLOUDFRONT_DISTRIBUTION
+
+ENV AWS_S3_WWW_BUCKET_URL s3://${AWS_S3_WWW_BUCKET}
+
+#Using the alias defined for the first container, copy the contents of the build folder to this container
+WORKDIR /
+COPY --from=builder /usr/src/app/build .
+
+#Set the default command of this container to push the files from the working directory of this container to our s3 bucket
+# Override enrypoint as the json array mode does not support using env vars
+# see https://docs.docker.com/engine/reference/builder/#cmd
+RUN /usr/local/bin/aws s3 sync ./ $AWS_S3_WWW_BUCKET_URL \
+    && aws cloudfront create-invalidation --distribution-id ${AWS_CLOUDFRONT_DISTRIBUTION} --paths "/*"
