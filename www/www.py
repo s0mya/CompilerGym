@@ -303,25 +303,30 @@ def step() -> Dict[str, Any]:
 
 # Web endpoints.
 
-
 @app.route("/")
 def index_resource():
-    return send_file(resource_dir / "index.html")
+    return "Healthy", 200
 
 
-@app.route("/<path>")
-def root_resource(path: str):
-    return send_file(resource_dir / path)
+
+# @app.route("/")
+# def index_resource():
+#     return send_file(resource_dir / "index.html")
 
 
-@app.route("/static/css/<path>")
-def css_resource(path: str):
-    return send_file(resource_dir / "static/css/" / path)
+# @app.route("/<path>")
+# def root_resource(path: str):
+#     return send_file(resource_dir / path)
 
 
-@app.route("/static/js/<path>")
-def js_resource(path: str):
-    return send_file(resource_dir / "static/js/" / path)
+# @app.route("/static/css/<path>")
+# def css_resource(path: str):
+#     return send_file(resource_dir / "static/css/" / path)
+
+
+# @app.route("/static/js/<path>")
+# def js_resource(path: str):
+#     return send_file(resource_dir / "static/js/" / path)
 
 
 if __name__ == "__main__":

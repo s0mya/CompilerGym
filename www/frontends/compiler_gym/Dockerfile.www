@@ -41,7 +41,7 @@ ARG AWS_CLOUDFRONT_DISTRIBUTION
 ENV AWS_S3_WWW_BUCKET_URL s3://${AWS_S3_WWW_BUCKET}
 
 #Using the alias defined for the first container, copy the contents of the build folder to this container
-WORKDIR /
+# WORKDIR /
 COPY --from=builder /usr/src/app/build .
 
 #Set the default command of this container to push the files from the working directory of this container to our s3 bucket

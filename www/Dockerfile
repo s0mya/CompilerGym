@@ -7,8 +7,8 @@ WORKDIR /app
 # hadolint ignore=DL3008
 RUN apt-get update \
     && apt-get install -y --no-install-recommends \
-        build-essential \
-        libtinfo5 \
+    build-essential \
+    libtinfo5 \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 
@@ -26,6 +26,6 @@ RUN pip3 install --no-cache-dir protobuf==3.13.0
 RUN python3 -m compiler_gym.bin.service --env=llvm-v0
 
 COPY www.py .
-COPY frontends/compiler_gym/build frontends/compiler_gym/build
+# COPY frontends/compiler_gym/build frontends/compiler_gym/build
 
 CMD [ "python3", "www.py"]
